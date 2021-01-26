@@ -6,18 +6,28 @@
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.3",
     "@testing-library/user-event": "^12.6.0",
+    "axios": "^0.21.1",
+    "gh-pages": "^3.1.0",
+    "node-sass": "^5.0.0",
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-helmet": "^6.1.0",
+    "react-player": "^2.8.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
+    "react-tabs": "^3.1.2",
+    "styled-components": "^5.2.1",
+    "styled-reset": "^4.3.4",
     "web-vitals": "^0.2.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "gh-pages -d build",
+    "predeploy": "npm run build"
   },
   "eslintConfig": {
     "extends": [
@@ -25,6 +35,7 @@
       "react-app/jest"
     ]
   },
+  "homepage": "https://mmmin-sy.github.io/nomflix",
   "browserslist": {
     "production": [
       ">0.2%",
