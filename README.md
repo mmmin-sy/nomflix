@@ -20,3 +20,12 @@ Learning React and ES6 by building a Movie Discovery App.
 - TV show Detail
 - Movie Detail
 - Search (TV, Movie) 
+
+## Code Challenges (..ing)
+
+- IMDB Link
+- Tabs inside of Details (YT Videos, Production Company & Countries)
+
+## Preview
+
+Try it on [netlify] https://stupefied-wright-7652de.netlify.com
