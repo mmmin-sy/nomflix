@@ -185,11 +185,11 @@ const DetailPresenter = ({
                                 <InfoTitle>Production Company</InfoTitle>
                                 <InfoList>
                                 {
-                                    result.production_companies 
+                                    result.production_companies.length > 0 
                                     ? result.production_companies.map(company =>(
                                         <InfoItem>{company.name}</InfoItem>
                                     ))
-                                    : `no company`
+                                    : `No company information`
                                 }
                                 </InfoList>
                                 
@@ -198,12 +198,13 @@ const DetailPresenter = ({
                                 <InfoTitle>Production Country</InfoTitle>
                                 <InfoList>
                                 {
-                                    result.production_countries 
-                                    && result.production_countries.map(country =>(
+                                    result.production_countries.length > 0  
+                                    ? result.production_countries.map(country =>(
                                         hasFlag(`${country.iso_3166_1}`) 
                                         ? <FlagImg title={`${country.name}`} src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${country.iso_3166_1}.svg`} />
                                         : <InfoItem>{country.name}</InfoItem>
                                     ))
+                                    : `No country information`
                                 }
                                 </InfoList>
                             </ProductionInfo>
@@ -212,7 +213,7 @@ const DetailPresenter = ({
                             <VideoContainer>
                             {
                                 result.videos.results &&   
-                                    <ReactPlayer width="100%" url={`https://www.youtube.com/watch?v=${result.videos.results[0].key}`} />                             
+                                    <ReactPlayer width="100%" controls="true" url={`https://www.youtube.com/watch?v=${result.videos.results[0].key}`} />                             
                             }
                             </VideoContainer>
                         </TabPanel>
