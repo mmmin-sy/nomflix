@@ -6,6 +6,7 @@ import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 import Helmet from "react-helmet";
 import Loader from "Components/Loader";
+import { hasFlag } from "country-flag-icons";
 
 const Container = styled.div`
     height: calc(100vh - 50px);
@@ -54,6 +55,12 @@ const Title = styled.h3`
     font-size: 32px;
 `;
 
+const Lang = styled.span`
+    font-size: 10px;
+    margin-left: 5px;
+    color: rgba(255, 255, 255, 0.5); 
+`;
+
 const ItemContainer = styled.div`
     margin:20px 0;
 `;
@@ -85,6 +92,10 @@ const OverView = styled.p`
 const ProductionInfo = styled.div`
     padding:0 10px;
     margin-bottom: 20px;
+
+    &:last-child {
+        padding-bottom: 40px;
+    }
 `;
 
 const InfoTitle = styled.h4`
@@ -100,9 +111,14 @@ const InfoItem = styled.li`
     margin-bottom: 5px;
 `;
 
+const FlagImg = styled.img`
+    width:20px;
+    margin-right:5px;
+`;
+
 const VideoContainer = styled.div`
-    width:70%;
-    padding: 10px;
+   padding: 10px;
+   max-width:100%;
 `;
 
 const DetailPresenter = ({
@@ -128,7 +144,14 @@ const DetailPresenter = ({
                     : require("../../assets/noPosterSmall.png")
                 } />
                 <Data>
-                    <Title>{result.original_title ? result.original_title : result.original_name }</Title>
+                    <Title>
+                        {result.original_title ? result.original_title : result.original_name }
+                        {
+                            result.spoken_languages.map(lang => (
+                            <Lang>{lang.name}</Lang>))
+                        }
+                    </Title>
+                    
                     <ItemContainer>
                         <Item>
                             {result.release_date ? result.release_date.substring(0, 4) : result.first_air_date.substring(0, 4)}
@@ -159,7 +182,7 @@ const DetailPresenter = ({
                         </TabList>
                         <TabPanel>
                             <ProductionInfo>
-                                <InfoTitle>Product Company</InfoTitle>
+                                <InfoTitle>Production Company</InfoTitle>
                                 <InfoList>
                                 {
                                     result.production_companies 
@@ -172,24 +195,24 @@ const DetailPresenter = ({
                                 
                             </ProductionInfo>
                             <ProductionInfo>
-                                <InfoTitle>Product Country</InfoTitle>
+                                <InfoTitle>Production Country</InfoTitle>
                                 <InfoList>
                                 {
                                     result.production_countries 
-                                    ? result.production_countries.map(country =>(
-                                        <InfoItem>{country.name}</InfoItem>
+                                    && result.production_countries.map(country =>(
+                                        hasFlag(`${country.iso_3166_1}`) 
+                                        ? <FlagImg title={`${country.name}`} src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${country.iso_3166_1}.svg`} />
+                                        : <InfoItem>{country.name}</InfoItem>
                                     ))
-                                    : `no company`
                                 }
                                 </InfoList>
-                                
                             </ProductionInfo>
                         </TabPanel>
                         <TabPanel>
                             <VideoContainer>
                             {
                                 result.videos.results &&   
-                                    <ReactPlayer width="100%" height="100%" url={`https://www.youtube.com/watch?v=${result.videos.results[0].key}`} />                             
+                                    <ReactPlayer width="100%" url={`https://www.youtube.com/watch?v=${result.videos.results[0].key}`} />                             
                             }
                             </VideoContainer>
                         </TabPanel>
