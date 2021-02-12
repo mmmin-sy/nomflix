@@ -4,9 +4,15 @@ const api = axios.create({
     baseURL: "https://api.themoviedb.org/3/",
     params: {
         "api_key":"66504ad4994ed34286632b191cb97174",
-        "language":"en-US"
+        "language":"de"
     }
 })
+
+export const trendApi = {
+    trendMovie: () => api.get("/trending/movie/week"),
+    trendTV: () => api.get("/trending/tv/week"),
+    trendPerson: () => api.get("/trending/person/day"),
+}
 
 export const moviesApi = {
     nowPlaying: () => api.get("movie/now_playing"),

@@ -68,13 +68,31 @@ const ItemContainer = styled.div`
 const Item = styled.span``;
 
 const ImdbLink = styled.a`
-    margin: 0 10px;
+    margin: 0 0 0 10px;
     padding: 0 3px;
     font-weight:600;
-    background-color:#F5C518;
+    background-color:#e1b12c;
     border-radius:2px;
     font-size: 10px;
     color:#000;
+
+    &:hover {
+        background-color:#fbc531;
+    }
+`;
+
+const HompageLink = styled.a`
+    margin: 0 0 0 10px;
+    padding: 0 3px;
+    font-weight:600;
+    background-color:#f0932b;
+    border-radius:2px;
+    font-size: 10px;
+    color:#000;
+
+    &:hover {
+        background-color:#ffbe76;
+    }
 `;
 
 const Divider = styled.span`
@@ -164,10 +182,14 @@ const DetailPresenter = ({
                         <Item>
                             {result.genres && result.genres.map((genre, index) => index === result.genres.length -1 ? genre.name : `${genre.name} / ` )}
                         </Item>
-
                         <Item>
                             {
                                 result.imdb_id && <ImdbLink href={`https://www.imdb.com/title/${result.imdb_id}`} target="_blank">IMDb</ImdbLink>
+                            }
+                        </Item>
+                        <Item>
+                            {
+                                result.homepage && <HompageLink href={result.homepage} target="_blank">HOMEPAGE</HompageLink>
                             }
                         </Item>
                     </ItemContainer>
@@ -212,8 +234,9 @@ const DetailPresenter = ({
                         <TabPanel>
                             <VideoContainer>
                             {
-                                result.videos.results &&   
-                                    <ReactPlayer width="100%" controls="true" url={`https://www.youtube.com/watch?v=${result.videos.results[0].key}`} />                             
+                                result.videos.results.length > 0 
+                                    ? <ReactPlayer width="100%" controls="true" url={`https://www.youtube.com/watch?v=${result.videos.results[0].key}`} />           
+                                    : "No Video"
                             }
                             </VideoContainer>
                         </TabPanel>

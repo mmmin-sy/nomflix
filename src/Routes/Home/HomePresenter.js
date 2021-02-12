@@ -1,72 +1,154 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Helmet from "react-helmet";
 import Section from "Components/Section";
 import Loader from "Components/Loader";
 import Message from "Components/Message";
-import Poster from "Components/Poster";
 
 const Container = styled.div`
-    padding:20px;
+    padding: 40px;
+    text-align: center;
+`;
+const HomeSection = styled.div`
+    display: flex;
+    justify-content: space-evenly;
+    padding-bottom: 20px;
 `;
 
-const HomePresenter = ({ nowPlaying, upcoming, popular, loading, error }) => (
+const Title = styled.h3`
+    display: block;
+    font-size: 18px;
+    margin: 20px 0;
+`;
+
+const Image = styled.div`
+    background-image: url(${props => props.bgUrl});
+    height: 180px;
+    width: 200px;
+    background-size: cover;
+    border-radius: 4px;
+    background-position: center center;
+    transition: opacity 0.1s linear;
+`;
+
+const Name = styled.span`
+    position:absolute;
+    bottom:5px;
+    right: 5px;
+    opacity: 0;
+    transition: opacity 0.1s linear;
+`;
+
+const Nummer = styled.span`
+    position:absolute;
+    top:5px;
+    left: 5px;
+    opacity: 0;
+    font-size: 50px;
+    font-weight: 600;
+    transition: opacity 0.1s linear;
+`;
+
+const ImageContainer = styled.div`
+    margin-bottom: 5px;
+    &:hover {
+        ${Image}{
+            opacity: 0.3;
+        }
+        ${Nummer} {
+            opacity: 0.5;
+        }
+        ${Name} {
+            opacity: 1;
+        }
+    }
+    position: relative;
+`;
+
+const HomePresenter = ({
+    trendMovie, trendTV, trendPerson, loading, error
+}) => (
     <>
         <Helmet>
-            <title>Movies | Nomflix </title>
+            <title>Home | Nomflix</title>
         </Helmet>
         {loading ? <Loader /> : (
-            <Container>
-                { nowPlaying && nowPlaying.length > 0 && (
-                    <Section title="Now Playing">{nowPlaying.map(movie => (
-                        <Poster 
-                        key={movie.id} 
-                        id={movie.id}
-                        imageUrl={movie.poster_path}
-                        title={movie.original_title} 
-                        rating={movie.vote_average}
-                        isMovie={true}
-                        year={movie.release_date && movie.release_date.substring(0, 4)}
-                        />
-                    ))}</Section>
-                )}
-                { upcoming && upcoming.length > 0 && (
-                    <Section title="Upcoming Movies">{upcoming.map(movie => (
-                    <Poster 
-                        key={movie.id} 
-                        id={movie.id}
-                        imageUrl={movie.poster_path}
-                        title={movie.original_title} 
-                        rating={movie.vote_average}
-                        isMovie={true}
-                        year={movie.release_date && movie.release_date.substring(0, 4)}
-                        />
-                    ))}</Section>
-                )}
-                { popular && popular.length > 0 && (
-                    <Section title="Popular Movies">{popular.map(movie => (
-                        <Poster 
-                        key={movie.id} 
-                        id={movie.id}
-                        imageUrl={movie.poster_path}
-                        title={movie.original_title} 
-                        rating={movie.vote_average}
-                        isMovie={true}
-                        year={movie.release_date && movie.release_date.substring(0, 4)}
-                        />
-                    ))}</Section>
-                )}
-                {error && <Message color="#d63031" text={error} />}
-            </Container>
+        <Container>
+            <Title>Today's Trend Movies </Title>
+            { trendMovie && trendMovie.length > 0 && (
+                <HomeSection>
+                    {
+                        trendMovie
+                        .sort((a, b) => {return b.popularity - a.popularity})
+                        .filter(movie => movie.poster_path !== null)
+                        .map((movie, index) =>
+                            index < 3 &&
+                            <Link to={`/movie/${movie.id}`}>
+                                <ImageContainer>
+                                    <Image bgUrl={movie.poster_path 
+                                    ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
+                                    : require("../../assets/noPosterSmall.png").default} />
+                                    <Nummer>{index + 1}</Nummer>
+                                    <Name>{movie.title}</Name>
+                                </ImageContainer>
+                            </Link>
+                        )
+                    }
+                </HomeSection>
+            )}
+            <Title>Today's Trend Shows</Title>
+            { trendTV && trendTV.length > 0 && (
+                <HomeSection>
+                    {
+                        trendTV
+                        .sort((a, b) => {return b.popularity - a.popularity})
+                        .filter(tv => tv.poster_path !== null)
+                        .map((tv, index) =>
+                            index < 3 &&
+                            <Link to={`/show/${tv.id}`}>
+                                <ImageContainer>
+                                    <Image bgUrl={tv.poster_path 
+                                        ? `https://image.tmdb.org/t/p/w300${tv.poster_path}`
+                                        : require("../../assets/noPosterSmall.png").default} />
+                                    <Nummer>{index + 1}</Nummer>
+                                    <Name>{tv.name}</Name>
+                                </ImageContainer>
+                            </Link>
+                            
+                        )
+                    }
+                </HomeSection>
+            )}
+            <Title>Today's Trend Stars</Title>
+            { trendPerson && trendPerson.length > 0 && (
+                <HomeSection>
+                        {
+                            trendPerson
+                            .sort((a, b) => {return b.popularity - a.popularity})
+                            .filter(person => person.profile_path !== null)
+                            .map((person, index) =>
+                                index < 3 &&
+                                <ImageContainer>
+                                <Image bgUrl={person.profile_path 
+                                    ? `https://image.tmdb.org/t/p/w235_and_h235_face/${person.profile_path}`
+                                    : require("../../assets/noPosterSmall.png").default} />
+                                <Name>{person.name}</Name>
+                                </ImageContainer>
+                            )
+                        }
+                </HomeSection>
+            )}
+        </Container>
         )}
     </>
 );
 
-HomePresenter.propTypes ={
-    nowPlaying:PropTypes.array,
-    upcoming:PropTypes.array, 
-    popular:PropTypes.array, 
+HomePresenter.propTypes = {
+    trendMovie:PropTypes.object,
+    trendTV:PropTypes.object,
+    trendPerson:PropTypes.object,
     loading:PropTypes.bool.isRequired, 
     error:PropTypes.string
 }

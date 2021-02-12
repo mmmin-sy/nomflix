@@ -1,29 +1,29 @@
 import React from "react";
 import HomePresenter from "./HomePresenter";
-import { moviesApi } from "api";
+import { trendApi } from "api";
 
 export default class extends React.Component{
     state = {
-        nowPlaying: null,
-        upcoming: null,
-        popular: null,
+        trendMovie: null,
+        trendTV: null,
+        trendPerson: null,
         error: null,
         loading: true
     }
 
     async componentDidMount(){
         try {
-            const {data: {results: nowPlaying}} = await moviesApi.nowPlaying();
-            const {data: {results: upcoming}} = await moviesApi.upcoming();
-            const {data: {results: popular}} = await moviesApi.popular();
+            const {data: {results: trendMovie}} = await trendApi.trendMovie();
+            const {data: {results: trendTV}} = await trendApi.trendTV();
+            const {data: {results: trendPerson}} = await trendApi.trendPerson();
             this.setState({
-                nowPlaying,
-                upcoming,
-                popular
+                trendMovie,
+                trendTV,
+                trendPerson
             })
         } catch {
             this.setState({
-                error: "Can't get Movies"
+                error: "Can't get Trend"
             })
         } finally {
             this.setState({
@@ -33,14 +33,14 @@ export default class extends React.Component{
     }
 
     render(){
-        const { nowPlaying, upcoming, popular, error, loading} = this.state;
+        const { trendMovie, trendTV, trendPerson, error, loading} = this.state;
         return (
             <HomePresenter 
-            nowPlaying={nowPlaying} 
-            upcoming={upcoming} 
-            popular={popular} 
-            error={error} 
-            loading={loading} 
+                trendMovie={trendMovie}
+                trendTV={trendTV}
+                trendPerson={trendPerson}
+                error={error} 
+                loading={loading} 
             />
         ) 
     }
