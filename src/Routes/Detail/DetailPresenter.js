@@ -1,12 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import ReactPlayer from "react-player";
+
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 import Helmet from "react-helmet";
 import Loader from "Components/Loader";
+import Section from "Components/Section";
+import Season from "Components/Season";
+import VideoSlide from "Components/VideoSlide";
 import { hasFlag } from "country-flag-icons";
+
 
 const Container = styled.div`
     height: calc(100vh - 50px);
@@ -107,7 +111,7 @@ const OverView = styled.p`
     margin-bottom: 20px;
 `;
 
-const ProductionInfo = styled.div`
+const TabContent = styled.div`
     padding:0 10px;
     margin-bottom: 20px;
 
@@ -116,11 +120,11 @@ const ProductionInfo = styled.div`
     }
 `;
 
-const InfoTitle = styled.h4`
+const ContentTitle = styled.h4`
     font-weight:600;
 `;
 
-const InfoList = styled.ul`
+const ContentList = styled.ul`
     margin-top: 10px;
     margin-bottom: 10px;
 `;
@@ -135,7 +139,7 @@ const FlagImg = styled.img`
 `;
 
 const VideoContainer = styled.div`
-   padding: 10px;
+   padding: 10px 30px;
    max-width:100%;
 `;
 
@@ -201,11 +205,15 @@ const DetailPresenter = ({
                         <TabList>
                             <Tab>Production Information</Tab>
                             <Tab>Videos</Tab>
+                            {
+                                result.seasons && result.seasons.length > 0 &&
+                                <Tab>Seasons</Tab>
+                            }
                         </TabList>
                         <TabPanel>
-                            <ProductionInfo>
-                                <InfoTitle>Production Company</InfoTitle>
-                                <InfoList>
+                            <TabContent>
+                                <ContentTitle>Production Company</ContentTitle>
+                                <ContentList>
                                 {
                                     result.production_companies.length > 0 
                                     ? result.production_companies.map(company =>(
@@ -213,12 +221,12 @@ const DetailPresenter = ({
                                     ))
                                     : `No company information`
                                 }
-                                </InfoList>
+                                </ContentList>
                                 
-                            </ProductionInfo>
-                            <ProductionInfo>
-                                <InfoTitle>Production Country</InfoTitle>
-                                <InfoList>
+                            </TabContent>
+                            <TabContent>
+                                <ContentTitle>Production Country</ContentTitle>
+                                <ContentList>
                                 {
                                     result.production_countries.length > 0  
                                     ? result.production_countries.map(country =>(
@@ -228,17 +236,46 @@ const DetailPresenter = ({
                                     ))
                                     : `No country information`
                                 }
-                                </InfoList>
-                            </ProductionInfo>
+                                </ContentList>
+                            </TabContent>
                         </TabPanel>
                         <TabPanel>
-                            <VideoContainer>
+                            
                             {
                                 result.videos.results.length > 0 
-                                    ? <ReactPlayer width="100%" controls="true" url={`https://www.youtube.com/watch?v=${result.videos.results[0].key}`} />           
-                                    : "No Video"
+                                ? <VideoContainer><VideoSlide videoData={result.videos.results} /></VideoContainer>
+                                : <TabContent>No Video</TabContent>
                             }
-                            </VideoContainer>
+                            
+                        </TabPanel>
+                        <TabPanel>
+                            
+                            {
+                                result.seasons && result.seasons.length > 0 &&
+                                    <TabContent>
+                                        <ContentTitle>Total of Seasons : {result.number_of_seasons}</ContentTitle>
+                                        <ContentList>
+                                            <Section>
+                                            {
+                                                result.seasons.length > 0 
+                                                ? (
+                                                    result.seasons.map(s => 
+                                                        <Season 
+                                                        key={s.id} 
+                                                        id={s.id}
+                                                        imageUrl={s.poster_path}
+                                                        name={s.name} 
+                                                        episode_count={s.episode_count}
+                                                        air_date={s.air_date}
+                                                        />
+                                                    )
+                                                ) : "No Season"
+                                            }
+                                            </Section>
+                                            
+                                        </ContentList>
+                                    </TabContent>
+                            }
                         </TabPanel>
                     </Tabs>
                 </Data>
