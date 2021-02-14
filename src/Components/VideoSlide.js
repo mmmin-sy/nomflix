@@ -4,6 +4,13 @@ import PropTypes from "prop-types";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import ReactPlayer from "react-player";
+import styled from "styled-components";
+
+const Title = styled.h3`
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 10px;
+`;
 
 const VideoSlide = ({videoData}) => {
     var settings = {
@@ -19,12 +26,13 @@ const VideoSlide = ({videoData}) => {
             {
                  videoData.map((v, index) =>
                     <div key={v.id}>
-                        <h3>Video #{index +1} : {v.name}</h3>
+                        <Title>Video #{index +1} : {v.name}</Title>
                         <ReactPlayer 
                         width="100%" 
                         controls="true" 
                         url={`https://www.youtube.com/watch?v=${v.key}`} 
                         />
+                        
                     </div>
                 )
             }
