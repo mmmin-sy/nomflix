@@ -1,16 +1,15 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React, {useState, useEffect} from "react";
 import styled from "styled-components";
-
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 import Helmet from "react-helmet";
 import Loader from "Components/Loader";
+import Message from "Components/Message";
 import Section from "Components/Section";
 import Season from "Components/Season";
 import VideoSlide from "Components/VideoSlide";
 import { hasFlag } from "country-flag-icons";
-
+import { moviesApi, tvApi } from "api";
 
 const Container = styled.div`
     height: calc(100vh - 50px);
@@ -143,10 +142,41 @@ const VideoContainer = styled.div`
    max-width:100%;
 `;
 
-const DetailPresenter = ({
-    result, loading, error
-}) => (
-    loading ? (
+const Detail = (
+    {location: { pathname },
+    match: {
+      params: { id }
+    },
+    history: { push }}) => {
+    const [result, setResult] = useState();
+    const [error, setError] = useState();
+    const [loading, setLoading] = useState(true);
+    const parsedId = parseInt(id);
+
+    useEffect(() => {
+        if(isNaN(parsedId)){
+            return push("/");
+        }
+        async function fetchData() {
+            try {
+                if(pathname.includes("/movie/")){
+                    const {data: result} = await moviesApi.movieDetail(parsedId);
+                    setResult(result)
+                }else {
+                    const {data: result} = await tvApi.showDetail(parsedId);
+                    setResult(result)
+                }
+            } catch {
+                setError("Can't find anything")
+            } finally {
+                setLoading(false)
+            }
+        };
+        
+        fetchData();
+    }, [id])
+
+    return loading ? (
         <>
         <Helmet>
             <title>Loading | Nomflix</title>
@@ -163,7 +193,7 @@ const DetailPresenter = ({
                 <Cover bgImage={
                     result.poster_path 
                     ? `https://image.tmdb.org/t/p/original${result.poster_path}` 
-                    : require("../../assets/noPosterSmall.png")
+                    : require("../assets/noPosterSmall.png")
                 } />
                 <Data>
                     <Title>
@@ -240,13 +270,11 @@ const DetailPresenter = ({
                             </TabContent>
                         </TabPanel>
                         <TabPanel>
-                            
                             {
                                 result.videos.results.length > 0 
                                 ? <VideoContainer><VideoSlide videoData={result.videos.results} /></VideoContainer>
                                 : <TabContent>No Video</TabContent>
                             }
-                            
                         </TabPanel>
                         <TabPanel>
                             
@@ -280,14 +308,9 @@ const DetailPresenter = ({
                     </Tabs>
                 </Data>
             </Content>
+            {error && <Message color="#d63031" text={error} />}
         </Container>
     )
-);
-
-DetailPresenter.propTypes ={
-    result:PropTypes.object,
-    loading:PropTypes.bool.isRequired, 
-    error:PropTypes.string
 }
 
-export default DetailPresenter;
+export default Detail;

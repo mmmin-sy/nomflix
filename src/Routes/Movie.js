@@ -1,18 +1,44 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React, {useState, useEffect} from "react";
 import styled from "styled-components";
 import Helmet from "react-helmet";
 import Section from "Components/Section";
 import Loader from "Components/Loader";
 import Message from "Components/Message";
 import Poster from "Components/Poster";
+import { moviesApi } from "api";
 
 const Container = styled.div`
-    padding:20px;
+    padding: 20px;
 `;
 
-const MoviePresenter = ({ nowPlaying, upcoming, popular, loading, error }) => (
-    <>
+const TV = () => {
+    const [nowPlaying, setNowPlaying] = useState();
+    const [upcoming, setUpcoming] = useState();
+    const [popular, setPopular] = useState();
+    const [error, setError] = useState();
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const {data: {results: nowPlaying}} = await moviesApi.nowPlaying();
+                const {data: {results: upcoming}} = await moviesApi.upcoming();
+                const {data: {results: popular}} = await moviesApi.popular();
+                setNowPlaying(nowPlaying);
+                setUpcoming(upcoming);
+                setPopular(popular);
+            } catch {
+                setError("Can't get Movie")
+            } finally {
+                setLoading(false)
+            }
+        };
+        fetchData();
+    }, [])
+
+    return loading 
+    ? <Loader />
+    : <>
         <Helmet>
             <title>Movies | Nomflix </title>
         </Helmet>
@@ -61,14 +87,6 @@ const MoviePresenter = ({ nowPlaying, upcoming, popular, loading, error }) => (
             </Container>
         )}
     </>
-);
+};
 
-MoviePresenter.propTypes ={
-    nowPlaying:PropTypes.array,
-    upcoming:PropTypes.array, 
-    popular:PropTypes.array, 
-    loading:PropTypes.bool.isRequired, 
-    error:PropTypes.string
-}
-
-export default MoviePresenter;
+export default TV;

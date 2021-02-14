@@ -1,11 +1,10 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React, {useState, useEffect} from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Helmet from "react-helmet";
-import Section from "Components/Section";
 import Loader from "Components/Loader";
 import Message from "Components/Message";
+import { trendApi } from "api";
 
 const Container = styled.div`
     padding: 40px;
@@ -67,10 +66,34 @@ const ImageContainer = styled.div`
     position: relative;
 `;
 
-const HomePresenter = ({
-    trendMovie, trendTV, trendPerson, loading, error
-}) => (
-    <>
+const Home = () => {
+    const [trendMovie, setTrendMovie] = useState();
+    const [trendTV, setTrendTV] = useState();
+    const [trendPerson, setTrendPerson] = useState();
+    const [error, setError] = useState();
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const {data: {results: trendMovie}} = await trendApi.trendMovie();
+                const {data: {results: trendTV}} = await trendApi.trendTV();
+                const {data: {results: trendPerson}} = await trendApi.trendPerson();
+                setTrendMovie(trendMovie);
+                setTrendTV(trendTV);
+                setTrendPerson(trendPerson);
+            } catch {
+                setError("Can't get Trend information")
+            } finally {
+                setLoading(false)
+            }
+        };
+        fetchData();
+    }, [])
+
+    return loading 
+    ? <Loader />
+    : <>
         <Helmet>
             <title>Home | Nomflix</title>
         </Helmet>
@@ -89,7 +112,7 @@ const HomePresenter = ({
                                 <ImageContainer>
                                     <Image bgUrl={movie.poster_path 
                                     ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
-                                    : require("../../assets/noPosterSmall.png").default} />
+                                    : require("../assets/noPosterSmall.png").default} />
                                     <Nummer>{index + 1}</Nummer>
                                     <Name>{movie.title}</Name>
                                 </ImageContainer>
@@ -111,7 +134,7 @@ const HomePresenter = ({
                                 <ImageContainer>
                                     <Image bgUrl={tv.poster_path 
                                         ? `https://image.tmdb.org/t/p/w300${tv.poster_path}`
-                                        : require("../../assets/noPosterSmall.png").default} />
+                                        : require("../assets/noPosterSmall.png").default} />
                                     <Nummer>{index + 1}</Nummer>
                                     <Name>{tv.name}</Name>
                                 </ImageContainer>
@@ -133,24 +156,17 @@ const HomePresenter = ({
                                 <ImageContainer>
                                 <Image bgUrl={person.profile_path 
                                     ? `https://image.tmdb.org/t/p/w235_and_h235_face/${person.profile_path}`
-                                    : require("../../assets/noPosterSmall.png").default} />
+                                    : require("../assets/noPosterSmall.png").default} />
                                 <Name>{person.name}</Name>
                                 </ImageContainer>
                             )
                         }
                 </HomeSection>
             )}
+            {error && <Message color="#d63031" text={error} />}
         </Container>
         )}
     </>
-);
+} 
 
-HomePresenter.propTypes = {
-    trendMovie:PropTypes.object,
-    trendTV:PropTypes.object,
-    trendPerson:PropTypes.object,
-    loading:PropTypes.bool.isRequired, 
-    error:PropTypes.string
-}
-
-export default HomePresenter;
+export default Home;
