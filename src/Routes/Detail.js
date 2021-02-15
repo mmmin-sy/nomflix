@@ -65,6 +65,7 @@ const Lang = styled.span`
 `;
 
 const ItemContainer = styled.div`
+line-height: 16px;
     margin:20px 0;
 `;
 
@@ -154,6 +155,7 @@ const Detail = (
     },
     history: { push }}) => {
     const [result, setResult] = useState();
+    const [isMovie, setIsMovie] = useState();
     const [error, setError] = useState();
     const [loading, setLoading] = useState(true);
     const parsedId = parseInt(id);
@@ -167,9 +169,12 @@ const Detail = (
                 if(pathname.includes("/movie/")){
                     const {data: result} = await moviesApi.movieDetail(parsedId);
                     setResult(result)
+                    setIsMovie(true)
                 }else {
                     const {data: result} = await tvApi.showDetail(parsedId);
                     setResult(result)
+                    setIsMovie(false)
+
                 }
             } catch {
                 setError("Can't find anything")
@@ -180,7 +185,6 @@ const Detail = (
         
         fetchData();
     }, [id])
-
     return loading ? (
         <>
         <Helmet>
@@ -191,7 +195,7 @@ const Detail = (
     ) : (
         <Container>
             <Helmet>
-                <title>{result.original_title ? result.original_title : result.original_name} | Nomflix</title>
+                <title>{isMovie? result.original_title : result.original_name} | Nomflix</title>
             </Helmet>
             <Backdrop bgImage={`https://image.tmdb.org/t/p/original${result.backdrop_path}`} />
             <Content>
