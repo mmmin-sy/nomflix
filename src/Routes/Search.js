@@ -12,7 +12,7 @@ const Container = styled.div`
 `;
 
 const Form = styled.form`
-    margin-bottom: 50px;
+    margin-bottom: 12px;
     width: 100%;
 `;
 
@@ -26,7 +26,18 @@ const Input = styled.input`
     }
 `;
 
-const Search = ({location: { pathname }}) => {  
+const ResultText = styled.p`
+    margin-bottom: 50px;
+    font-size: 12px;
+    color: #b2bec3;
+`;
+
+const ResultNumber = styled.strong`
+    font-weight: 600;
+    text-decoration: underline;
+`;
+
+const Search = () => {  
     const [movieResults, setMovieResults] = useState();
     const [tvResults, setTVResults] = useState();
     const [searchTerm, setSearchTerm] = useState("");
@@ -57,7 +68,6 @@ const Search = ({location: { pathname }}) => {
             setLoading(false)
         }
     }
-
     return (
         <Container>
         <Helmet><title>Search | Nomflix</title></Helmet>
@@ -65,6 +75,31 @@ const Search = ({location: { pathname }}) => {
             <Input placeholder="Search Movies or TV Shows..." value={searchTerm} onChange={updateTerm}/>
         </Form>
         {loading ? <Loader /> : <>
+            <ResultText> 
+                {
+                    movieResults ? "We have " : (
+                        tvResults ? "We have " : null
+                    )
+                }
+                {
+                    movieResults &&
+                    <>
+                    <ResultNumber>
+                        {movieResults.length > 0 ? movieResults.length : "0"}
+                    </ResultNumber>
+                    {movieResults.length === 1 ? ` movie ` : ` movies `}
+                    </>
+                }
+                {
+                    tvResults &&
+                    <>
+                    <ResultNumber>
+                        {tvResults.length > 0 ? tvResults.length : "0"}
+                    </ResultNumber>
+                    {tvResults.length === 1 ? ` show.` : ` shows.`}
+                    </>
+                }   
+                </ResultText>
         {movieResults && movieResults.length > 0 && (
             <Section title="Movie Results">
                 {movieResults.map(movie => 
