@@ -1,5 +1,7 @@
 #Nomflix
 
+Min, Sooyung 
+
 Learning React and ES6 by building a Movie Discovery App.
 
 ## Screens
@@ -20,11 +22,17 @@ Learning React and ES6 by building a Movie Discovery App.
 - TV show Detail
 - Movie Detail
 - Search (TV, Movie) 
+- Trend Movies, Shows and Persons
 
-## Code Challenges (..ing)
+## Special in detail 
 
-- IMDB Link
-- Tabs inside of Details (YT Videos, Production Company & Countries)
+- Show IMDB Link, Homepage and Languages 
+- Tabs inside of Details (YT Videos, Production Company & Countries and Seasons)
+
+## Special in search 
+
+- Show total number of Movies oder Shows
+
 
 ## Preview
 

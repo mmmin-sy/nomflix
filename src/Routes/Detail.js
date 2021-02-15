@@ -159,7 +159,6 @@ const Detail = (
     const [error, setError] = useState();
     const [loading, setLoading] = useState(true);
     const parsedId = parseInt(id);
-
     useEffect(() => {
         if(isNaN(parsedId)){
             return push("/");
